@@ -17,7 +17,7 @@ void main()
   or_sr(0x8);			/* GIE (enable interrupts) */
   u_char width = screenWidth, height = screenHeight;
 
-  clearScreen(COLOR_BLUE);
+  clearScreen(COLOR_BLACK);
 
   drawString5x7(10,10, "switches:", COLOR_GREEN, COLOR_BLUE);
   while (1) {
