@@ -197,8 +197,6 @@ int bounceRight(MovLayer *ml, Region *fence)
   } /**< for ml */
 
   return used;
-}
-
 
 u_int bgColor = COLOR_BLUE;     /**< The background color */
 int redrawScreen = 1;           /**< Boolean for whether screen needs to be redrawn */
@@ -229,13 +227,15 @@ void main()
   drawString5x7(50, 152, score, COLOR_BLACK, COLOR_BLUE);
   
   enableWDTInterrupts();      /**< enable periodic interrupt */
-  or_sr(0x8);	              /**< GIE (enable interrupts) */
+  or_sr(0x8);  /**< GIE (enable interrupts) */
+  
 		 
   for(;;) {
     while (0) { /**< Pause CPU if screen doesn't need updating */
       P1OUT &= ~GREEN_LED;    /**< Green led off witHo CPU */
       or_sr(0x10);	      /**< CPU OFF */
     }
+    switches();
     P1OUT |= GREEN_LED;       /**< Green led on when CPU on */
     redrawScreen = 0;
     movLayerDraw(&ml0, &layer0);
@@ -245,6 +245,7 @@ void main()
     layerGetBounds(&layer2, &paddle2);
   }
 }
+
 
   
 /** Watchdog timer interrupt handler. 15 interrupts/sec */
