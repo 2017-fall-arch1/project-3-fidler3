@@ -14,4 +14,5 @@ void switch_init();
 void switch_interrupt_handler();
 
 extern char switch_state_down1 , switch_state_changed, switch_state_down2, switch_state_down3, switch_state_down4; /* effectively boolean */
+
 #endif // included
