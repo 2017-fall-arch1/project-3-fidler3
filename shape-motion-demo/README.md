@@ -1,4 +1,4 @@
-#PONG
+## PONG
 ## Introduction
 
 The following is the code that implements a simples 1-player pong game.
@@ -7,7 +7,7 @@ the paddle on the left or the right. The ball with bounce off the top and bottom
 but the game will reset if the ball touches the walls on the left and right.
 The score is kept on the bottom center of the LCD screen and is displayed in base 10.
 
-##Controls
+## Controls
 S1- Moves the left paddle up
 S2 - Moves the left paddle down
 S3 - Move the right paddle up
