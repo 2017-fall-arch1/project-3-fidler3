@@ -25,3 +25,6 @@ stateMachine:
 	mov r4, r5
 	AND #8, r5
 	JZ rpaddledown
+lpaddleup:
+	sub #4, r1
+	mov layer1(0), 0(r1)

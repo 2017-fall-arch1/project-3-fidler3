@@ -81,7 +81,6 @@ void stateMachine(){
       return;   
     MovLayer *a = &ml1;
     a->layer->posNext.axes[1]-=10;
-    //movLayerDraw(a, &layer1);
     return;
   }
   if(!(switches & (2))){ //s2
@@ -89,7 +88,6 @@ void stateMachine(){
       return;
     MovLayer *a = &ml1;
     a->layer->posNext.axes[1]+=10;
-    //movLayerDraw(a, &layer1);
     return;
   }
   if(!(switches & (4))){ //s3
@@ -97,7 +95,6 @@ void stateMachine(){
       return;
     MovLayer *a = &ml2;
     a->layer->posNext.axes[1]-=10;
-    //movLayerDraw(a, &layer2);
     return;
   }
   
