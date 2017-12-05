@@ -56,7 +56,7 @@ char mlAdvance(MovLayer *ml, Region *fence)
 {
   Vec2 newPos;
   u_char axis;
-  int used = 0;
+  char used = 0;
   Region shapeBoundary;
   for (; ml; ml = ml->next) {
     vec2Add(&newPos, &ml->layer->posNext, &ml->velocity);
@@ -66,14 +66,15 @@ char mlAdvance(MovLayer *ml, Region *fence)
 	  (shapeBoundary.botRight.axes[axis] >= fence->botRight.axes[axis]) ) {
 	int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
 	newPos.axes[axis] += (2*velocity);
-	if((shapeBoundary.topLeft.axes[0] == fence->topLeft.axes[0]) ||
-	   (shapeBoundary.botRight.axes[0] == fence->botRight.axes[0])){
-	  used = 1;
-	}
       }	/**< if outside of fence */
     } /**< for axis */
     ml->layer->posNext = newPos;
   } /**< for ml */
+
+  if((shapeBoundary.topLeft.axes[0] <= fence->topLeft.axes[0]) ||
+     (shapeBoundary.botRight.axes[0] >= fence->botRight.axes[0])){
+    used = 1;
+  }
   return used;
 }
 
@@ -119,7 +120,7 @@ char bounceRight(MovLayer *ml, Region *fence)
     vec2Add(&newPos, &ml->layer->posNext, &ml->velocity);
     abShapeGetBounds(ml->layer->abShape, &newPos, &shapeBoundary);
     if ((shapeBoundary.botRight.axes[0] >= tlx) &&
-	 ( shapeBoundary.botRight.axes[0] <= brx)) {
+	 (shapeBoundary.botRight.axes[0] <= brx)) {
       if((shapeBoundary.botRight.axes[1] >= tly) &&
 	 (shapeBoundary.botRight.axes[1] <= bry)){
       int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];

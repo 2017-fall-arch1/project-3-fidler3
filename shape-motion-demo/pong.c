@@ -5,8 +5,11 @@
 #include <p2switches.h>
 #include <shape.h>
 #include <abCircle.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 #include "shapemotion.h"
-#include "switches.h"
+#include "buzzer.h"
 
 AbRect rect10 = {abRectGetBounds, abRectCheck, {2,10}}; /**< 10x10 rectangle */
 AbRArrow rightArrow = {abRArrowGetBounds, abRArrowCheck, 30};
@@ -64,18 +67,20 @@ Region *fence = &fieldFence;
 Region *p1 = &paddle1;
 Region *p2 = &paddle2;
 char button = 5;
+int score = 0;
+char sc[12];
+char num = 0;
 
 void stateMachine(){
   u_int switches = p2sw_read();
-  layerGetBounds(&fieldLayer, fence);
-  layerGetBounds(&layer1, p1);
-  layerGetBounds(&layer1, p2);
+  layerGetBounds(&layer1, &paddle1);
+  layerGetBounds(&layer2, &paddle2);
 
   if(!(switches & (1<<0))){
     if(p1->topLeft.axes[1] == fence->topLeft.axes[1])
       return;   
     MovLayer *a = &ml1;
-    a->layer->posNext.axes[1]-=5;
+    a->layer->posNext.axes[1]-=10;
     movLayerDraw(a, &layer1);
     return;
   }
@@ -83,24 +88,25 @@ void stateMachine(){
     if(p1->botRight.axes[1] == fence->botRight.axes[1])
       return;
     MovLayer *a = &ml1;
-    a->layer->posNext.axes[1]+=5;
+    a->layer->posNext.axes[1]+=10;
     movLayerDraw(a, &layer1);
     return;
   }
   if(!(switches & (1<<2))){
-    if(p2->topLeft.axes[1] > fence->topLeft.axes[1]){
-      MovLayer *a = &ml2;
-      a->layer->posNext.axes[1]-=5;
-      movLayerDraw(a, &layer2);
-    }
+    if(p2->topLeft.axes[1] == fence->topLeft.axes[1])
+      return;
+    MovLayer *a = &ml2;
+    a->layer->posNext.axes[1]-=10;
+    movLayerDraw(a, &layer2);
     return;
   }
+  
   if(!(switches & (1<<3))){
-    if(p2->botRight.axes[1] < fence->botRight.axes[1]){
-      MovLayer *a = &ml2;
-      a->layer->posNext.axes[1]+=5;
-      movLayerDraw(a, &layer2);
-    }
+    if(p2->botRight.axes[1] == fence->botRight.axes[1])
+      return;
+    MovLayer *a = &ml2;
+    a->layer->posNext.axes[1]+=10;
+    movLayerDraw(a, &layer2);
     return;
   }
 }
@@ -121,13 +127,11 @@ void main()
   layerDraw(&layer0);
   enableWDTInterrupts();      /**< enable periodic interrupt */
   or_sr(0x8);  /**< GIE (enable interrupts) */
- 
 
-  char score[3] = {'0','0', '\0'};
+  itoa(score, sc, 10);
+  layerGetBounds(&fieldLayer, &fieldFence);
+  drawString5x7(50, 152, sc, COLOR_BLACK, COLOR_BLUE);
   
-  drawString5x7(50, 152, score, COLOR_BLACK, COLOR_BLUE);
-  
-		 
   for(;;) {
     while(0){
       P1OUT &= ~GREEN_LED;
@@ -136,12 +140,14 @@ void main()
     P1OUT |= GREEN_LED; /**< Green led on when CPU on */
     redrawScreen = 0;
     movLayerDraw(&ml0, &layer0);
-    layerGetBounds(&fieldLayer, &fieldFence);
-    layerGetBounds(&layer1, &paddle1);
-    layerGetBounds(&layer1, &paddle2);
   }
 }
 
+void add1(){
+  score++;
+  itoa(score, sc, 10);
+  drawString5x7(50, 152, sc, COLOR_BLACK, COLOR_BLUE);  
+  }
 /** Watchdog timer interrupt handler. 15 interrupts/sec */
 void wdt_c_handler()
 {
@@ -150,14 +156,20 @@ void wdt_c_handler()
   P1OUT |= GREEN_LED;		      /**< Green LED on when cpu on */
   count ++;
   if (count == 15) {
-    mlAdvance(&ml0, &fieldFence);
-    bounceLeft(&ml0, &paddle1);
-    bounceRight(&ml0, &paddle2);
+    buzzer_set_period(0);
+    if(mlAdvance(&ml0, &fieldFence)){
+      WDTCTL |= 0xFF;
+    }
+    if((bounceLeft(&ml0, &paddle1)) ||
+       (bounceRight(&ml0, &paddle2))){
+      add1();
+      buzzer_init4();
+    }
     if(p2sw_read()){
       stateMachine();
     }
     count = 0;
     button = 5;
-  } 
+  }
   P1OUT &= ~GREEN_LED;		    /**< Green LED off when cpu off */
 }
