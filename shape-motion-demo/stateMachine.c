@@ -1,41 +1,15 @@
-#include "shapemotion.h"
+#include <msp430.h>
+#include "buzzer.h"
 
-void stateMachine(){
-  u_int switches = p2sw_read();
-  layerGetBounds(&layer1, &paddle1);
-  layerGetBounds(&layer2, &paddle2);
-
-  if(!(switches & (1))){
-    if(p1->topLeft.axes[1] == fence->topLeft.axes[1])
-      return;   
-    MovLayer *a = &ml1;
-    a->layer->posNext.axes[1]-=10;
-    movLayerDraw(a, &layer1);
+void buzzerState(char c){
+  if(c==0){
+    buzzer_set_period(0);
     return;
-  }
-  if(!(switches & (2))){
-    if(p1->botRight.axes[1] == fence->botRight.axes[1])
-      return;
-    MovLayer *a = &ml1;
-    a->layer->posNext.axes[1]+=10;
-    movLayerDraw(a, &layer1);
+  }if(c==1){
+    buzzer_set_period(5000);
     return;
-  }
-  if(!(switches & (4))){
-    if(p2->topLeft.axes[1] == fence->topLeft.axes[1])
-      return;
-    MovLayer *a = &ml2;
-    a->layer->posNext.axes[1]-=10;
-    movLayerDraw(a, &layer2);
-    return;
-  }
-  
-  if(!(switches & (8))){
-    if(p2->botRight.axes[1] == fence->botRight.axes[1])
-      return;
-    MovLayer *a = &ml2;
-    a->layer->posNext.axes[1]+=10;
-    movLayerDraw(a, &layer2);
-    return;
+  }if(c==2){
+     buzzer_set_period(1000);
+     return;
   }
 }

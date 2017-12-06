@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include "shapemotion.h"
 #include "buzzer.h"
+#include "stateMachine.h"
 
 AbRect rect10 = {abRectGetBounds, abRectCheck, {2,10}}; /**< 10x10 rectangle */
 AbRArrow rightArrow = {abRArrowGetBounds, abRArrowCheck, 30};
@@ -70,6 +71,8 @@ char button = 5;
 int score = 0;
 char sc[12];
 char num = 0;
+int highscore = 0;
+char hs[12];
 
 void stateMachine(){
   u_int switches = p2sw_read();
@@ -109,6 +112,7 @@ void stateMachine(){
 }
 
 /* initial value of {0,0} will be overwritten */
+
 void main()
 {
   P1DIR |= GREEN_LED;		/**< Green led on when CPU on */		
@@ -124,10 +128,14 @@ void main()
   layerDraw(&layer0);
   enableWDTInterrupts();      /**< enable periodic interrupt */
   or_sr(0x8);  /**< GIE (enable interrupts) */
-
+  buzzer_init1();
+  buzzerState(2);
   itoa(score, sc, 10);
   layerGetBounds(&fieldLayer, &fieldFence);
   drawString5x7(0, 152, "Score:", COLOR_BLACK, COLOR_BLUE);
+  itoa(highscore, hs, 10);
+  drawString5x7(75, 152, hs, COLOR_RED, COLOR_BLACK);
+  
   for(;;) {
     while(0){
       P1OUT &= ~GREEN_LED;
@@ -136,6 +144,7 @@ void main()
     P1OUT |= GREEN_LED; /**< Green led on when CPU on */
     redrawScreen = 0;
     drawString5x7(50, 152, sc, COLOR_BLACK, COLOR_BLUE);
+    drawString5x7(75, 152, hs, COLOR_RED, COLOR_BLACK);
     movLayerDraw(&ml0, &layer0);
     movLayerDraw(&ml1, &layer1);
     movLayerDraw(&ml2, &layer2);
@@ -147,6 +156,15 @@ void add1(){ //add1 to score and redraw
   score++;
   itoa(score, sc, 10);  
 }
+void startOver(){
+  if(score > highscore){
+    highscore = score;
+    itoa(highscore, hs, 10);
+  }
+  score = 0;
+  itoa(score, sc, 10);
+  
+}
 /** Watchdog timer interrupt handler. 15 interrupts/sec */
 void wdt_c_handler()
 {
@@ -155,14 +173,15 @@ void wdt_c_handler()
   P1OUT |= GREEN_LED;		      /**< Green LED on when cpu on */
   count ++;
   if (count == 15) {
-    buzzer_set_period(0);
+    buzzerState(0);
     if(mlAdvance(&ml0, &fieldFence)){
-      WDTCTL |= 0xFF;
+      buzzerState(2);
+      startOver();
     }
     if((bounceLeft(&ml0, &paddle1)) ||
        (bounceRight(&ml0, &paddle2))){
       add1(); //adjust score
-      buzzer_init4(); //beep when you get a point
+      buzzerState(1); //beep when you get a point
     }
     if(p2sw_read()){
       stateMachine();

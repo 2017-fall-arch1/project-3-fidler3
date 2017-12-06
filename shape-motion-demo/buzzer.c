@@ -1,6 +1,7 @@
 #include <msp430.h>
 #include "libTimer.h"
 #include "buzzer.h"
+#include "stateMachine.h"
 
 void buzzer_init1()
 {
@@ -16,8 +17,7 @@ void buzzer_init1()
     P2SEL &= ~BIT7; 
     P2SEL |= BIT6;
     P2DIR = BIT6;		/* enable output to speaker (P2.6) */
-
-    buzzer_set_period(1000);	/* start buzzing!!! */
+	/* start buzzing!!! */
 }
 
 void buzzer_init2()
