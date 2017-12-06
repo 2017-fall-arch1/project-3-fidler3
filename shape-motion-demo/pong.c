@@ -68,12 +68,13 @@ Region *fence = &fieldFence;
 Region *p1 = &paddle1;
 Region *p2 = &paddle2;
 char button = 5;
-int score = 0;
+int score = 00;
 char sc[12];
 char num = 0;
 int highscore = 0;
 char hs[12];
 
+//statemachine for buttons
 void stateMachine(){
   u_int switches = p2sw_read();
   layerGetBounds(&layer1, &paddle1);
@@ -156,6 +157,7 @@ void add1(){ //add1 to score and redraw
   score++;
   itoa(score, sc, 10);  
 }
+
 void startOver(){
   if(score > highscore){
     highscore = score;

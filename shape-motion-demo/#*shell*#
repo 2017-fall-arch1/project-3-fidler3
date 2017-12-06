@@ -1,0 +1,72 @@
+ _____________________________________
+/ Don't get stuck in a closet -- wear \
+\ yourself out.                       /
+ -------------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+[student@localhost shape-motion-demo]$ make
+msp430-elf-gcc -mmcu=msp430g2553 -Os -I../h -L../lib -L/opt/ti/msp430_gcc/include/  -o pong.elf pong.o shapemotion.o wdt_handler.o buzzer.o stateMachine.s -lTimer -lLcd -lShape -lCircle -lp2sw
+stateMachine.s: Assembler messages:
+stateMachine.s:5: Error: unrecognized symbol type ""
+make: *** [Makefile:14: pong.elf] Error 1
+[student@localhost shape-motion-demo]$ make
+msp430-elf-gcc -mmcu=msp430g2553 -Os -I../h -L../lib -L/opt/ti/msp430_gcc/include/  -o pong.elf pong.o shapemotion.o wdt_handler.o buzzer.o stateMachine.s -lTimer -lLcd -lShape -lCircle -lp2sw
+[student@localhost shape-motion-demo]$ make clean
+rm -f *.o *.elf
+[student@localhost shape-motion-demo]$ make
+msp430-elf-gcc -mmcu=msp430g2553 -Os -I../h   -c -o pong.o pong.c
+msp430-elf-gcc -mmcu=msp430g2553 -Os -I../h   -c -o shapemotion.o shapemotion.c
+msp430-elf-gcc -mmcu=msp430g2553 -c   -o wdt_handler.o wdt_handler.s
+msp430-elf-gcc -mmcu=msp430g2553 -Os -I../h   -c -o buzzer.o buzzer.c
+msp430-elf-gcc -mmcu=msp430g2553 -Os -I../h -L../lib -L/opt/ti/msp430_gcc/include/  -o pong.elf pong.o shapemotion.o wdt_handler.o buzzer.o stateMachine.s -lTimer -lLcd -lShape -lCircle -lp2sw
+[student@localhost shape-motion-demo]$ make clean
+rm -f *.o *.elf
+[student@localhost shape-motion-demo]$ ls
+ buzzer.c  '#pong.h#'	   '*shell*'	      stateMachine.h~   state.s~      wdt_handler.s
+ buzzer.h   README.md	    stateMachine.c    stateMachine.s    switches.c
+ Makefile   shapemotion.c   stateMachine.c~   stateMachine.s~   switches.c~
+ pong.c     shapemotion.h   stateMachine.h    state.s	        switches.h
+[student@localhost shape-motion-demo]$ make load
+msp430-elf-gcc -mmcu=msp430g2553 -Os -I../h   -c -o pong.o pong.c
+msp430-elf-gcc -mmcu=msp430g2553 -Os -I../h   -c -o shapemotion.o shapemotion.c
+msp430-elf-gcc -mmcu=msp430g2553 -c   -o wdt_handler.o wdt_handler.s
+msp430-elf-gcc -mmcu=msp430g2553 -Os -I../h   -c -o buzzer.o buzzer.c
+msp430-elf-gcc -mmcu=msp430g2553 -Os -I../h -L../lib -L/opt/ti/msp430_gcc/include/  -o pong.elf pong.o shapemotion.o wdt_handler.o buzzer.o stateMachine.s -lTimer -lLcd -lShape -lCircle -lp2sw
+mspdebug rf2500 "prog pong.elf"
+MSPDebug version 0.23 - debugging tool for MSP430 MCUs
+Copyright (C) 2009-2015 Daniel Beer <dlbeer@gmail.com>
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Chip info database from MSP430.dll v3.3.1.4 Copyright (C) 2013 TI, Inc.
+
+Trying to open interface 1 on 019
+Initializing FET...
+FET protocol version is 30394216
+Set Vcc: 3000 mV
+Configured for Spy-Bi-Wire
+Device ID: 0x2553
+  Code start address: 0xc000
+  Code size         : 16384 byte = 16 kb
+  RAM  start address: 0x200
+  RAM  end   address: 0x3ff
+  RAM  size         : 512 byte = 0 kb
+Device: MSP430G2xx3
+Number of breakpoints: 2
+fet: FET returned NAK
+warning: device does not support power profiling
+Chip ID data: 25 53
+Erasing...
+Programming...
+Writing    2 bytes at ffe6 [section: __interrupt_vector_4]...
+Writing    2 bytes at fff4 [section: __interrupt_vector_11]...
+Writing    2 bytes at fffe [section: __reset_vector]...
+Writing  552 bytes at c000 [section: .rodata]...
+Writing   12 bytes at c228 [section: .rodata2]...
+Writing 4096 bytes at c234 [section: .text]...
+Writing  836 bytes at d234 [section: .text]...
+Writing  142 bytes at d578 [section: .data]...
+Done, 5644 bytes total
+[student@localhost shape-motion-demo]$ 
