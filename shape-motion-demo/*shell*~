@@ -1,0 +1,25 @@
+ _____________________________________
+/ Don't get stuck in a closet -- wear \
+\ yourself out.                       /
+ -------------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+[student@localhost shape-motion-demo]$ make
+msp430-elf-gcc -mmcu=msp430g2553 -Os -I../h -L../lib -L/opt/ti/msp430_gcc/include/  -o pong.elf pong.o shapemotion.o wdt_handler.o buzzer.o stateMachine.s -lTimer -lLcd -lShape -lCircle -lp2sw
+stateMachine.s: Assembler messages:
+stateMachine.s:5: Error: unrecognized symbol type ""
+make: *** [Makefile:14: pong.elf] Error 1
+[student@localhost shape-motion-demo]$ make
+msp430-elf-gcc -mmcu=msp430g2553 -Os -I../h -L../lib -L/opt/ti/msp430_gcc/include/  -o pong.elf pong.o shapemotion.o wdt_handler.o buzzer.o stateMachine.s -lTimer -lLcd -lShape -lCircle -lp2sw
+[student@localhost shape-motion-demo]$ make clean
+rm -f *.o *.elf
+[student@localhost shape-motion-demo]$ make
+msp430-elf-gcc -mmcu=msp430g2553 -Os -I../h   -c -o pong.o pong.c
+msp430-elf-gcc -mmcu=msp430g2553 -Os -I../h   -c -o shapemotion.o shapemotion.c
+msp430-elf-gcc -mmcu=msp430g2553 -c   -o wdt_handler.o wdt_handler.s
+msp430-elf-gcc -mmcu=msp430g2553 -Os -I../h   -c -o buzzer.o buzzer.c
+msp430-elf-gcc -mmcu=msp430g2553 -Os -I../h -L../lib -L/opt/ti/msp430_gcc/include/  -o pong.elf pong.o shapemotion.o wdt_handler.o buzzer.o stateMachine.s -lTimer -lLcd -lShape -lCircle -lp2sw
+[student@localhost shape-motion-demo]$ 
